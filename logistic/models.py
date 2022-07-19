@@ -3,8 +3,7 @@ from django.db import models
 
 
 class Product(models.Model):
-    def __str__(self):
-        return f'{self.id},{self.title}'
+
     title = models.CharField(max_length=60, unique=True)
     description = models.TextField(null=True, blank=True)
 
