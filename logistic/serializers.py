@@ -43,11 +43,10 @@ class StockSerializer(serializers.ModelSerializer):
         # обновляем склад по его параметрам
         stock = super().update(instance, validated_data)
 
-        to_delete = StockProduct.objects.filter(stock_id=stock.id)
-        to_delete.delete()
 
         for position in positions:
-            StockProduct.objects.update_or_create(stock_id=stock.id , **position)
+
+            StockProduct.objects.update_or_create( stock_id=stock.id , **position)
 
 
         # здесь вам надо обновить связанные таблицы
