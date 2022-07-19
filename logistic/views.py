@@ -21,16 +21,19 @@ class ProductViewSet(ModelViewSet):
 
 class StockViewSet(ModelViewSet):
     def get_queryset(self):
-        product_name = self.request.GET.get('products')
-        try:
-            product_id = Product.objects.get(title__icontains=product_name)
-        except logistic.models.Product.DoesNotExist:
-            pass
-        try:
-            product_id = Product.objects.get(description__icontains=product_name)
-        except logistic.models.Product.DoesNotExist:
-            product_id = product_name
-        return Stock.objects.filter(products=product_id)
+        if self.request.GET != {}:
+            product_name = self.request.GET.get('products', '')
+            try:
+                product_id = Product.objects.get(title__icontains=product_name)
+            except logistic.models.Product.DoesNotExist:
+                pass
+            try:
+                product_id = Product.objects.get(description__icontains=product_name)
+            except logistic.models.Product.DoesNotExist:
+                product_id = product_name
+            return Stock.objects.filter(products=product_id)
+        else:
+            return Stock.objects.all()
     serializer_class = StockSerializer
     pagination_class = LimitOffsetPagination
 
