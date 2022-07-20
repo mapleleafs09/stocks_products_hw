@@ -22,16 +22,30 @@ class ProductViewSet(ModelViewSet):
 class StockViewSet(ModelViewSet):
     def get_queryset(self):
         if self.request.GET != {}:
+            products_ids = set()
             product_name = self.request.GET.get('products', '')
             try:
-                product_id = Product.objects.filter(title__icontains=product_name)
+                ids = [product_id.id for product_id in
+                               Product.objects.filter(title__icontains=product_name)]
+                products_ids.update(ids)
             except logistic.models.Product.DoesNotExist:
                 pass
             try:
-                product_id = Product.objects.filter(description__icontains=product_name)
+                ids = [product_id.id for product_id in
+                               Product.objects.filter(description__icontains=product_name)]
+
+                products_ids.update(ids)
             except logistic.models.Product.DoesNotExist:
-                product_id = product_name
-            return Stock.objects.filter(products=product_id)
+                pass
+            try:
+
+                ids = [product_id.id for product_id in
+                       Product.objects.filter(id__icontains=product_name)]
+                products_ids.update(ids)
+            except logistic.models.Product.DoesNotExist:
+                pass
+            print(products_ids)
+            return Stock.objects.filter(products__in=products_ids)
         else:
             return Stock.objects.all()
     serializer_class = StockSerializer
