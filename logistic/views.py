@@ -24,11 +24,11 @@ class StockViewSet(ModelViewSet):
         if self.request.GET != {}:
             product_name = self.request.GET.get('products', '')
             try:
-                product_id = Product.objects.get(title__icontains=product_name)
+                product_id = Product.objects.filter(title__icontains=product_name)
             except logistic.models.Product.DoesNotExist:
                 pass
             try:
-                product_id = Product.objects.get(description__icontains=product_name)
+                product_id = Product.objects.filter(description__icontains=product_name)
             except logistic.models.Product.DoesNotExist:
                 product_id = product_name
             return Stock.objects.filter(products=product_id)
